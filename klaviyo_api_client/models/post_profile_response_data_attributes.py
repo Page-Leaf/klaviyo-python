@@ -1,5 +1,5 @@
 import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar, Union, cast
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
@@ -37,7 +37,7 @@ class PostProfileResponseDataAttributes:
             MM-DDTHH:MM:SS.mmmmmm) Example: 2022-11-08T00:00:00.
         updated (Union[Unset, datetime.datetime]): Date and time when the profile was last updated, in ISO 8601 format
             (YYYY-MM-DDTHH:MM:SS.mmmmmm) Example: 2022-11-08T00:00:00.
-        last_event_date (Union[Unset, datetime.datetime]): Date and time of the most recent event the triggered an
+        last_event_date (Union[None, Unset, datetime.datetime]): Date and time of the most recent event the triggered an
             update to the profile, in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.mmmmmm) Example: 2022-11-08T00:00:00.
         location (Union[Unset, ProfileLocation]):
         properties (Union[Unset, PostProfileResponseDataAttributesProperties]): An object containing key/value pairs for
@@ -56,7 +56,7 @@ class PostProfileResponseDataAttributes:
     image: Union[Unset, str] = UNSET
     created: Union[Unset, datetime.datetime] = UNSET
     updated: Union[Unset, datetime.datetime] = UNSET
-    last_event_date: Union[Unset, datetime.datetime] = UNSET
+    last_event_date: Union[None, Unset, datetime.datetime] = UNSET
     location: Union[Unset, "ProfileLocation"] = UNSET
     properties: Union[Unset, "PostProfileResponseDataAttributesProperties"] = UNSET
     subscriptions: Union[Unset, "Subscriptions"] = UNSET
@@ -88,9 +88,13 @@ class PostProfileResponseDataAttributes:
         if not isinstance(self.updated, Unset):
             updated = self.updated.isoformat()
 
-        last_event_date: Union[Unset, str] = UNSET
-        if not isinstance(self.last_event_date, Unset):
+        last_event_date: Union[None, Unset, str]
+        if isinstance(self.last_event_date, Unset):
+            last_event_date = UNSET
+        elif isinstance(self.last_event_date, datetime.datetime):
             last_event_date = self.last_event_date.isoformat()
+        else:
+            last_event_date = self.last_event_date
 
         location: Union[Unset, Dict[str, Any]] = UNSET
         if not isinstance(self.location, Unset):
@@ -184,12 +188,22 @@ class PostProfileResponseDataAttributes:
         else:
             updated = isoparse(_updated)
 
-        _last_event_date = d.pop("last_event_date", UNSET)
-        last_event_date: Union[Unset, datetime.datetime]
-        if isinstance(_last_event_date, Unset):
-            last_event_date = UNSET
-        else:
-            last_event_date = isoparse(_last_event_date)
+        def _parse_last_event_date(data: object) -> Union[None, Unset, datetime.datetime]:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            try:
+                if not isinstance(data, str):
+                    raise TypeError()
+                last_event_date_type_0 = isoparse(data)
+
+                return last_event_date_type_0
+            except:  # noqa: E722
+                pass
+            return cast(Union[None, Unset, datetime.datetime], data)
+
+        last_event_date = _parse_last_event_date(d.pop("last_event_date", UNSET))
 
         _location = d.pop("location", UNSET)
         location: Union[Unset, ProfileLocation]

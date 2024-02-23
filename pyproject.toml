@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "klaviyo-api-client"
-version = "2024-02-15"
+version = "0.1.0"
 description = "A client library for accessing Klaviyo API"
 authors = []
 readme = "README.md"
